@@ -4,6 +4,7 @@ const server = express()
 
 server.use(express.json())
 
+server.use('/api/users', require('./routes/user'))
 server.use('/api', require('./routes/welcome'))
 
 server.use((err, _req, res, _next) => {
