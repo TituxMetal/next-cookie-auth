@@ -19,6 +19,7 @@ WORKDIR /app/prod
 COPY --from=builder /app/build/.next ./.next
 COPY --from=builder /app/build/server ./server
 COPY --from=builder /app/build/node_modules ./node_modules
+COPY --from=builder /app/build/static ./static
 COPY --from=builder /app/build/index.js ./
 COPY --from=builder /app/build/package.json ./
 
