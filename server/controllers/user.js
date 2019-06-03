@@ -7,7 +7,7 @@ const register = async ({ value }, res) => {
     const foundUser = await User.find({ $or: [{ email }, { name }] }).countDocuments()
 
     if (foundUser) {
-      const error = JSON.stringify({ errors: 'User already exists' })
+      const error = JSON.stringify({ errors: { message: 'User already exists' } })
 
       throw new Error(error)
     }
