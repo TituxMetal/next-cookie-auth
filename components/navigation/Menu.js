@@ -1,5 +1,5 @@
 import { NavBar } from '../styled'
-import { ActiveLink } from '../navigation'
+import { ActiveLink, SignedInLinks, SignedOutLinks } from '../navigation'
 
 const Menu = () => {
   return (
@@ -16,6 +16,8 @@ const Menu = () => {
         <ActiveLink href='/about'>
           <a>About</a>
         </ActiveLink>
+        <SignedInLinks />
+        <SignedOutLinks />
       </section>
     </NavBar>
   )
