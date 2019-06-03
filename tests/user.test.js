@@ -42,8 +42,8 @@ describe('Users Routes', () => {
 
       const { errors } = JSON.parse(error.text)
 
-      expect(errors).toBeDefined()
-      expect(errors).toBe('User already exists')
+      expect(errors.message).toBeDefined()
+      expect(errors.message).toBe('User already exists')
     })
 
     it('should not create user if invalid data given', async () => {
