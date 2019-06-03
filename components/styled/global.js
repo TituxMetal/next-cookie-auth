@@ -8,7 +8,9 @@ export const theme = {
   primaryDark: 'hsl(278.1, 100%, 22.5%)',
   secondary: 'hsl(21, 100%, 45%)',
   secondaryLight: 'hsl(22.2, 100%, 61.4%)',
-  secondaryDark: 'hsl(8.7, 100%, 33.7%)'
+  secondaryDark: 'hsl(8.7, 100%, 33.7%)',
+  errorPrimary: 'hsl(0, 71.1%, 66.1%)',
+  errorSecondary: 'hsl(0, 88.9%, 61.2%)'
 }
 
 export const GlobalStyle = createGlobalStyle`
