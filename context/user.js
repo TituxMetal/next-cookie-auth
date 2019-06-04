@@ -1,11 +1,11 @@
 import { useState, createContext } from 'react'
 import Router from 'next/router'
 
-import { register } from '../lib'
+import { register, login } from '../lib'
 
 export const UserContext = createContext()
 
-export const UserProvider = ({ children }) => {
+export const UserProvider = ({ children, pathname }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false)
   const initialFields = { name: '', email: '', password: '' }
   const [fields, setFields] = useState(initialFields)
@@ -14,9 +14,12 @@ export const UserProvider = ({ children }) => {
 
   const handleChange = event => setFields({ ...fields, [event.target.name]: event.target.value })
 
-  const submitRegister = async () => {
+  const submitAuth = async authData => {
     try {
-      const { data } = await register(fields)
+      const { data } =
+        (pathname === '/register' && (await register(authData))) ||
+        (pathname === '/login' && (await login(authData)))
+
       setFields(initialFields)
       setUser(data.user)
       setIsAuthenticated(true)
@@ -30,8 +33,7 @@ export const UserProvider = ({ children }) => {
 
   return (
     <UserContext.Provider
-      value={{ isAuthenticated, fields, setFields, handleChange, submitRegister, error, setError }}
-    >
+      value={{ isAuthenticated, fields, setFields, handleChange, submitAuth, error, setError }}>
       {children}
     </UserContext.Provider>
   )
