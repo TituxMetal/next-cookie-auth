@@ -23,6 +23,22 @@ const register = async ({ value }, res) => {
   }
 }
 
-const UserController = { register }
+const login = async ({ value }, res) => {
+  const { email, password } = value.body
+
+  try {
+    const user = await User.findByCredentials(email, password)
+    const token = await user.generateAuthToken()
+
+    user.token = token
+    await user.save()
+
+    res.send({ user, success: true })
+  } catch (e) {
+    res.status(400).send(e.message)
+  }
+}
+
+const UserController = { register, login }
 
 module.exports = UserController
