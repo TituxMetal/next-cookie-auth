@@ -26,4 +26,9 @@ const register = Joi.object().keys({
   password: password.required()
 })
 
-module.exports = { register }
+const login = Joi.object().keys({
+  email: email.required(),
+  password: password.required()
+})
+
+module.exports = { register, login }
