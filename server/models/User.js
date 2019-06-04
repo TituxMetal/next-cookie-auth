@@ -14,7 +14,7 @@ const userSchema = new mongoose.Schema(
   { timestamps: true }
 )
 
-userSchema.pre('save', async function() {
+userSchema.pre('save', async function () {
   const user = this
 
   if (user.isModified('password')) {
@@ -24,7 +24,7 @@ userSchema.pre('save', async function() {
   }
 })
 
-userSchema.methods.toJSON = function() {
+userSchema.methods.toJSON = function () {
   const user = this
   const userObject = user.toObject()
 
@@ -33,7 +33,7 @@ userSchema.methods.toJSON = function() {
   return userObject
 }
 
-userSchema.methods.generateAuthToken = async function() {
+userSchema.methods.generateAuthToken = async function () {
   const user = this
   const _id = user.id.toString()
   const token = await jwt.sign({ _id }, jwtSecret, jwtOptions)
@@ -46,13 +46,20 @@ userSchema.methods.generateAuthToken = async function() {
 }
 
 userSchema.statics.findByCredentials = async (email, password) => {
-  const user = await user.findOne({ email })
+  const user = await User.findOne({ email })
+  const errorMessage = JSON.stringify({
+    errors: { message: 'Unable to login. Bad credentials.' }
+  })
 
-  !user && null
+  if (!user) {
+    throw new Error(errorMessage)
+  }
 
   const isMatch = await bcrypt.compare(password, user.password)
 
-  !isMatch && null
+  if (!isMatch) {
+    throw new Error(errorMessage)
+  }
 
   return user
 }
