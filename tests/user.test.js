@@ -64,4 +64,48 @@ describe('Users Routes', () => {
       expect(errors.password).toBe('"Password field" is required')
     })
   })
+
+  describe('POST /api/users/login => Log a user in', () => {
+    it('should log the user in', async () => {
+      const { _id, name, email, password } = userOne
+      const { body } = await request(server)
+        .post('/api/users/login')
+        .send({ email, password })
+        .expect(200)
+
+      expect(body.user).toMatchObject({ _id: _id.toString(), name, email })
+      expect(body.user.token).toBeDefined()
+      expect(body.success).toBe(true)
+    })
+
+    it('should return an error message if bad credentials given', async () => {
+      const { email, password } = testUser
+      const { error, body } = await request(server)
+        .post('/api/users/login')
+        .send({ email, password })
+        .expect(400)
+
+      expect(body.user).not.toBeDefined()
+
+      const { errors } = JSON.parse(error.text)
+
+      expect(errors.message).toBe('Unable to login. Bad credentials.')
+    })
+
+    it('should return error message if invalid data given', async () => {
+      const { error, body } = await request(server)
+        .post('/api/users/login')
+        .send({ email: '   invalid@email .com   ', password: '   abc   ' })
+        .expect(400)
+
+      expect(body.user).not.toBeDefined()
+
+      const { errors } = JSON.parse(error.text)
+
+      expect(errors.email).toBeDefined()
+      expect(errors.password).toBeDefined()
+      expect(errors.email).toBe(`"Email field" must be a valid email`)
+      expect(errors.password).toBe(`"Password field" length must be at least 8 characters long`)
+    })
+  })
 })
