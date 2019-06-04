@@ -5,11 +5,12 @@ import { InputField } from '../form'
 import { Form, Button, Error } from '../styled'
 
 const RegisterForm = () => {
-  const { fields, error, submitRegister } = useContext(UserContext)
+  const { fields, error, submitAuth } = useContext(UserContext)
 
   const handleSubmit = async event => {
     event.preventDefault()
-    await submitRegister()
+    const { name, email, password } = fields
+    await submitAuth({ name, email, password })
   }
 
   return (
