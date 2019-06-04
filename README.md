@@ -15,7 +15,7 @@ Built with React using React Hooks and React Context, styled with Styled Compone
 | Task                                    | Status | Done                      |
 | --------------------------------------- | ------ | ------------------------- |
 | Register user                           | Done   | <ul><li> - [x] </li></ul> |
-| Login user                              | To do  | <ul><li> - [ ] </li></ul> |
+| Login user                              | Done   | <ul><li> - [x] </li></ul> |
 | Logout user                             | To do  | <ul><li> - [ ] </li></ul> |
 | Show the logged in user profile         | To do  | <ul><li> - [ ] </li></ul> |
 | Edit the current logged in user profile | To do  | <ul><li> - [ ] </li></ul> |
