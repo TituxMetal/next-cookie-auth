@@ -5,7 +5,7 @@ import { ContextProvider } from '../context'
 import { theme } from '../components/styled'
 
 class MyApp extends App {
-  static async getInitialProps({ Component, router, ctx }) {
+  static async getInitialProps ({ Component, router, ctx }) {
     let pageProps = {}
 
     if (Component.getInitialProps) {
@@ -15,12 +15,13 @@ class MyApp extends App {
     return { pageProps }
   }
 
-  render() {
-    const { Component, pageProps } = this.props
+  render () {
+    const { Component, pageProps, router } = this.props
+    const { pathname } = router
 
     return (
       <Container>
-        <ContextProvider>
+        <ContextProvider pathname={pathname}>
           <ThemeProvider theme={theme}>
             <Component {...pageProps} />
           </ThemeProvider>
