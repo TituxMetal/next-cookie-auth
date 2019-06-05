@@ -5,7 +5,7 @@ import { NavBar } from '../styled'
 import { ActiveLink, SignedInLinks, SignedOutLinks } from '../navigation'
 
 const Menu = props => {
-  const { isAuthenticated } = useContext(UserContext)
+  const { isAuthenticated, handleLogout } = useContext(UserContext)
 
   return (
     <NavBar>
@@ -21,7 +21,7 @@ const Menu = props => {
         <ActiveLink href='/about'>
           <a>About</a>
         </ActiveLink>
-        {isAuthenticated ? <SignedInLinks /> : <SignedOutLinks />}
+        {isAuthenticated ? <SignedInLinks logout={handleLogout} /> : <SignedOutLinks />}
       </section>
     </NavBar>
   )

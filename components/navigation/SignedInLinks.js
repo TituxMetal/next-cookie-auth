@@ -1,12 +1,12 @@
 import { ActiveLink } from '../navigation'
 import { NavButton } from '../styled'
 
-const SignedInLinks = () => (
+const SignedInLinks = ({ logout }) => (
   <>
     <ActiveLink href='/profile'>
       <a>Profile</a>
     </ActiveLink>
-    <NavButton>Logout</NavButton>
+    <NavButton onClick={logout}>Logout</NavButton>
   </>
 )
 
