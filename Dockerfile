@@ -27,5 +27,11 @@ EXPOSE 3000
 
 ENV NODE_ENV production
 ENV MONGO_URI mongodb://mongo:27017/next-auth-cookie
+ENV REDIS_HOST localhost
+ENV REDIS_PORT 6379
+ENV REDIS_PASSWORD password
+ENV SESS_NAME sessionname
+ENV SESS_SECRET sessionsecret
+ENV SESS_LIFETIME 2000
 
 CMD ["yarn", "start"]
