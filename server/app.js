@@ -6,6 +6,8 @@ const server = express()
 
 server.use(express.json())
 
+server.set('trust proxy', true)
+
 server.use(session)
 
 server.use('/api/users', require('./routes/user'))

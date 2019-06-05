@@ -10,6 +10,7 @@ module.exports = session({
   secret: sessSecret,
   resave: true,
   rolling: true,
+  proxy: true,
   saveUninitialized: false,
   cookie: { maxAge: parseInt(sessLifetime), sameSite: true, secure: isProd }
 })
