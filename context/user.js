@@ -1,7 +1,7 @@
 import { useEffect, useState, createContext } from 'react'
 import Router from 'next/router'
 
-import { register, login } from '../lib'
+import { register, login, logout } from '../lib'
 
 export const UserContext = createContext()
 
@@ -43,12 +43,21 @@ export const UserProvider = ({ children, pathname, authStatus }) => {
     }
   }
 
+  const handleLogout = async () => {
+    const { data } = await logout()
+    if (data.success) {
+      setUser('')
+      setIsAuthenticated(false)
+    }
+  }
+
   return (
     <UserContext.Provider
       value={{
         error,
         fields,
         handleChange,
+        handleLogout,
         isAuthenticated,
         setError,
         setFields,
