@@ -2,7 +2,14 @@ const request = require('supertest')
 
 const server = require('../server/app')
 const User = require('../server/models/User')
-const { userOne, userTwo, userTwoToken, setupDatabase, cleanupDatabase } = require('./setup')
+const {
+  userOne,
+  userTwo,
+  userTwoId,
+  userTwoToken,
+  setupDatabase,
+  cleanupDatabase
+} = require('./setup')
 
 describe('Users Routes', () => {
   const testUser = { name: 'test', email: 'test@test.com', password: 'test1234' }
@@ -203,6 +210,59 @@ describe('Users Routes', () => {
 
       expect(body.user).toBe(false)
       expect(body.success).toBe(false)
+    })
+  })
+
+  describe('PATCH /api/users/me => Edit user', () => {
+    it('should edit the current logged in user and return updated user data', async () => {
+      const updatedUser = {
+        name: 'User Two Update',
+        email: 'usertwoupdate@test.com',
+        password: 'newSuperTestPassword'
+      }
+      const { body } = await request(server)
+        .patch('/api/users/me')
+        .set('Authorization', `Bearer ${userTwoToken}`)
+        .send(updatedUser)
+        .expect(200)
+
+      expect(body.success).toBe(true)
+
+      const { name, email } = updatedUser
+
+      expect(body.user).toMatchObject({ name, email })
+    })
+
+    it('should not edit the user if it is not authenticated', async () => {
+      const { error, body } = await request(server)
+        .patch('/api/users/me')
+        .send({ name: 'update' })
+        .expect(400)
+
+      expect(body.user).not.toBeDefined()
+
+      const { errors } = JSON.parse(error.text)
+
+      expect(errors.message).toBe('You must be authenticated')
+    })
+
+    it('should not update invalid user fields', async () => {
+      const { error, body } = await request(server)
+        .patch('/api/users/me')
+        .set('Authorization', `Bearer ${userTwoToken}`)
+        .send({ name: 'updated', location: 'not valid field' })
+        .expect(400)
+
+      expect(body.user).not.toBeDefined()
+
+      const { errors } = JSON.parse(error.text)
+
+      expect(errors).toMatchObject({ location: '"location" is not allowed' })
+
+      const { name, location } = await User.findOne({ _id: userTwoId })
+
+      expect(name).not.toBe('updated')
+      expect(location).not.toBeDefined()
     })
   })
 })
