@@ -20,15 +20,30 @@ const password = Joi.string()
   .trim()
   .label('Password field')
 
+const isUpdate = field =>
+  Joi.when('$update', {
+    is: Joi.boolean()
+      .valid(true)
+      .required(),
+    then: field.optional(),
+    otherwise: field.required()
+  })
+
 const register = Joi.object().keys({
-  email: email.required(),
-  name: name.required(),
-  password: password.required()
+  email: isUpdate(email),
+  name: isUpdate(name),
+  password: isUpdate(password)
 })
 
 const login = Joi.object().keys({
-  email: email.required(),
-  password: password.required()
+  email: isUpdate(email),
+  password: isUpdate(password)
 })
 
-module.exports = { register, login }
+const edit = Joi.object().keys({
+  email: isUpdate(email),
+  name: isUpdate(name),
+  password: isUpdate(password)
+})
+
+module.exports = { register, login, edit }
