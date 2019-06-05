@@ -62,6 +62,30 @@ const logout = async (req, res) => {
 const me = async ({ user }, res) =>
   user ? res.json({ user, success: true }) : res.json({ user: false, success: false })
 
-const UserController = { register, login, logout, me }
+const edit = async ({ value, user }, res) => {
+  const data = value.body
+  const updates = Object.keys(data)
+
+  try {
+    if (!user) {
+      const error = JSON.stringify({ errors: { message: 'You must be authenticated' } })
+
+      throw new Error(error)
+    }
+
+    const updatedUser = await User.findById(user._id)
+    updates.forEach(update => (updatedUser[update] = data[update]))
+
+    await updatedUser.save()
+
+    user = updatedUser
+
+    res.json({ user, success: true })
+  } catch (e) {
+    res.status(400).send(e.message)
+  }
+}
+
+const UserController = { register, login, logout, me, edit }
 
 module.exports = UserController
