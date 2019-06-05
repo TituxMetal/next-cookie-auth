@@ -1,6 +1,7 @@
 const next = require('next')
 
 const { port, isProd } = require('./server/config')
+const { isAuthenticated } = require('./server/middlewares')
 const dev = !isProd
 const app = next({ dev })
 const handle = app.getRequestHandler()
@@ -12,7 +13,7 @@ const server = require('./server/app')
 app.prepare().then(() => {
   server.get('/_next/*', (req, res) => handle(req, res))
   server.get('/static/*', (req, res) => handle(req, res))
-  server.get('*', (req, res) => handle(req, res))
+  server.get('*', isAuthenticated, (req, res) => handle(req, res))
 
   server.listen(port, err => {
     if (err) {
