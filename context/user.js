@@ -1,16 +1,28 @@
-import { useState, createContext } from 'react'
+import { useEffect, useState, createContext } from 'react'
 import Router from 'next/router'
 
 import { register, login } from '../lib'
 
 export const UserContext = createContext()
 
-export const UserProvider = ({ children, pathname }) => {
-  const [isAuthenticated, setIsAuthenticated] = useState(false)
+export const UserProvider = ({ children, pathname, authStatus }) => {
+  const [isAuthenticated, setIsAuthenticated] = useState(authStatus.success)
   const initialFields = { name: '', email: '', password: '' }
   const [fields, setFields] = useState(initialFields)
-  const [user, setUser] = useState()
+  const [user, setUser] = useState(authStatus.user)
   const [error, setError] = useState('')
+
+  useEffect(
+    () => {
+      user !== authStatus.user && setUser(authStatus.user)
+      isAuthenticated !== authStatus.success && setIsAuthenticated(authStatus.success)
+
+      return () => {
+        setError('')
+      }
+    },
+    [authStatus]
+  )
 
   const handleChange = event => setFields({ ...fields, [event.target.name]: event.target.value })
 
@@ -24,7 +36,7 @@ export const UserProvider = ({ children, pathname }) => {
       setUser(data.user)
       setIsAuthenticated(true)
       setError('')
-      Router.replace('/')
+      Router.push('/profile')
     } catch (e) {
       const msg = (e.response.data && e.response.data.errors) || e.message
       setError(msg)
@@ -33,7 +45,16 @@ export const UserProvider = ({ children, pathname }) => {
 
   return (
     <UserContext.Provider
-      value={{ isAuthenticated, fields, setFields, handleChange, submitAuth, error, setError }}>
+      value={{
+        error,
+        fields,
+        handleChange,
+        isAuthenticated,
+        setError,
+        setFields,
+        submitAuth,
+        user
+      }}>
       {children}
     </UserContext.Provider>
   )
