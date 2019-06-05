@@ -1,3 +1,4 @@
+const { sessName } = require('../config')
 const User = require('../models/User')
 
 const register = async ({ value, session }, res) => {
@@ -42,9 +43,25 @@ const login = async ({ session, value }, res) => {
   }
 }
 
+const logout = async (req, res) => {
+  if (req.user) {
+    const { email, token } = req.user
+    const logoutUser = await User.findOne({ $or: [{ email }, { token }] })
+
+    logoutUser.token = ''
+    await logoutUser.save()
+    delete req.user
+  }
+
+  delete req.session
+
+  res.clearCookie(sessName)
+  res.json({ success: true })
+}
+
 const me = async ({ user }, res) =>
   user ? res.json({ user, success: true }) : res.json({ user: false, success: false })
 
-const UserController = { register, login, me }
+const UserController = { register, login, logout, me }
 
 module.exports = UserController
