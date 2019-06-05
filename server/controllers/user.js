@@ -1,6 +1,6 @@
 const User = require('../models/User')
 
-const register = async ({ value }, res) => {
+const register = async ({ value, session }, res) => {
   const { name, email, password } = value.body
 
   try {
@@ -15,21 +15,24 @@ const register = async ({ value }, res) => {
     const user = new User({ email, name, password })
     const token = await user.generateAuthToken()
 
+    session.accessToken = token
     await user.save()
 
-    res.status(201).json({ user })
+    res.status(201).json({ user, success: true })
   } catch (e) {
     res.status(400).send(e.message)
   }
 }
 
-const login = async ({ value }, res) => {
+const login = async ({ session, value }, res) => {
   const { email, password } = value.body
 
   try {
     const user = await User.findByCredentials(email, password)
+
     const token = await user.generateAuthToken()
 
+    session.accessToken = token
     user.token = token
     await user.save()
 
@@ -39,6 +42,9 @@ const login = async ({ value }, res) => {
   }
 }
 
-const UserController = { register, login }
+const me = async ({ user }, res) =>
+  user ? res.json({ user, success: true }) : res.json({ user: false, success: false })
+
+const UserController = { register, login, me }
 
 module.exports = UserController
