@@ -1,8 +1,12 @@
 const express = require('express')
 
+const { session } = require('./middlewares')
+
 const server = express()
 
 server.use(express.json())
+
+server.use(session)
 
 server.use('/api/users', require('./routes/user'))
 server.use('/api', require('./routes/welcome'))
