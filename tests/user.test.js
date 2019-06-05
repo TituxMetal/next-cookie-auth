@@ -2,7 +2,7 @@ const request = require('supertest')
 
 const server = require('../server/app')
 const User = require('../server/models/User')
-const { userOne, setupDatabase, cleanupDatabase } = require('./setup')
+const { userOne, userTwo, userTwoToken, setupDatabase, cleanupDatabase } = require('./setup')
 
 describe('Users Routes', () => {
   const testUser = { name: 'test', email: 'test@test.com', password: 'test1234' }
@@ -106,6 +106,55 @@ describe('Users Routes', () => {
       expect(errors.password).toBeDefined()
       expect(errors.email).toBe(`"Email field" must be a valid email`)
       expect(errors.password).toBe(`"Password field" length must be at least 8 characters long`)
+    })
+  })
+
+  describe('GET /api/users/me => Check the user authentication', () => {
+    it('should return the user data and success must be true if the user is authenticated with bearer token header', async () => {
+      const { body } = await request(server)
+        .get('/api/users/me')
+        .set('Authorization', `Bearer ${userTwoToken}`)
+        .expect(200)
+
+      expect(body.success).toBe(true)
+
+      const { _id, name, email, token } = userTwo
+
+      expect(body.user).toMatchObject({ _id: _id.toString(), name, email, token })
+    })
+
+    it('should return the user data and success must be true if the user is authenticated with session cookie', async () => {
+      const { _id, email, name, password, token } = userTwo
+      const { header } = await request(server)
+        .post('/api/users/login')
+        .send({ email, password })
+        .expect(200)
+      expect(header['set-cookie']).toBeDefined()
+
+      const cookie = header['set-cookie'][0].split(';')[0]
+      const { body } = await request(server)
+        .get('/api/users/me')
+        .set('Cookie', cookie)
+        .expect(200)
+
+      expect(body.user).toMatchObject({ _id: _id.toString(), name, email })
+      expect(body.user.token).toBeDefined()
+      expect(body.success).toBe(true)
+    })
+
+    it('should return user: false and success: false if the user is not authenticated', async () => {
+      const { header, body } = await request(server)
+        .get('/api/users/me')
+        .expect(200)
+
+      expect(header['set-cookie']).toBeDefined()
+
+      const cookie = header['set-cookie'][0].split(';')[0]
+
+      expect(cookie).toBe('token=')
+
+      expect(body.user).toBe(false)
+      expect(body.success).toBe(false)
     })
   })
 })
