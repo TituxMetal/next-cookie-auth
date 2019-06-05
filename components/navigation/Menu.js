@@ -1,7 +1,12 @@
+import { useContext } from 'react'
+
+import { UserContext } from '../../context'
 import { NavBar } from '../styled'
 import { ActiveLink, SignedInLinks, SignedOutLinks } from '../navigation'
 
-const Menu = () => {
+const Menu = props => {
+  const { isAuthenticated } = useContext(UserContext)
+
   return (
     <NavBar>
       <div className='brand'>
@@ -16,8 +21,7 @@ const Menu = () => {
         <ActiveLink href='/about'>
           <a>About</a>
         </ActiveLink>
-        <SignedInLinks />
-        <SignedOutLinks />
+        {isAuthenticated ? <SignedInLinks /> : <SignedOutLinks />}
       </section>
     </NavBar>
   )
