@@ -265,4 +265,31 @@ describe('Users Routes', () => {
       expect(location).not.toBeDefined()
     })
   })
+
+  describe('DELETE /api/users/me => Delete user', () => {
+    it('should delete the current logged in user', async () => {
+      const { body } = await request(server)
+        .delete('/api/users/me')
+        .set('Authorization', `${userTwoToken}`)
+        .expect(200)
+
+      expect(body).toEqual({ success: true })
+
+      const user = await User.findById(userTwoId)
+
+      expect(user).toBe(null)
+    })
+
+    it('should not delete user if not authenticated', async () => {
+      const { error, body } = await request(server)
+        .delete('/api/users/me')
+        .expect(400)
+
+      expect(body.user).not.toBeDefined()
+
+      const { errors } = JSON.parse(error.text)
+
+      expect(errors.message).toBe('You must be authenticated')
+    })
+  })
 })
