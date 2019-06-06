@@ -10,5 +10,6 @@ router.post('/login', validateBody(login, false), UserController.login)
 router.post('/me', isAuthenticated, UserController.logout)
 router.get('/me', isAuthenticated, UserController.me)
 router.patch('/me', isAuthenticated, validateBody(edit, true), UserController.edit)
+router.delete('/me', isAuthenticated, UserController.remove)
 
 module.exports = router
