@@ -86,6 +86,21 @@ const edit = async ({ value, user }, res) => {
   }
 }
 
-const UserController = { register, login, logout, me, edit }
+const remove = async ({ user }, res) => {
+  try {
+    if (!user) {
+      const error = JSON.stringify({ errors: { message: 'You must be authenticated' } })
+      throw new Error(error)
+    }
+
+    await User.findOneAndDelete({ _id: user._id })
+
+    res.json({ success: true })
+  } catch (e) {
+    res.status(400).send(e.message)
+  }
+}
+
+const UserController = { register, login, logout, me, edit, remove }
 
 module.exports = UserController
