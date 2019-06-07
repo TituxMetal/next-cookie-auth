@@ -1,7 +1,7 @@
 import { useEffect, useState, createContext } from 'react'
 import Router from 'next/router'
 
-import { register, login, logout, update } from '../lib'
+import { register, login, logout, update, remove } from '../lib'
 
 export const UserContext = createContext()
 
@@ -67,6 +67,22 @@ export const UserProvider = ({ children, pathname, authStatus }) => {
     }
   }
 
+  const submitDelete = async () => {
+    try {
+      const { data } = await remove()
+
+      if (data.success) {
+        setUser('')
+        setError('')
+        Router.push('/')
+      }
+    } catch (e) {
+      const msg = (e.response.data && e.response.data.errors) || e.message
+
+      setError(msg)
+    }
+  }
+
   const handleLogout = async () => {
     const { data } = await logout()
     if (data.success) {
@@ -88,6 +104,7 @@ export const UserProvider = ({ children, pathname, authStatus }) => {
         setError,
         setFields,
         submitAuth,
+        submitDelete,
         submitUpdate,
         user
       }}>
