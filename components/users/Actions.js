@@ -20,11 +20,13 @@ const Actions = styled.section`
   }
 `
 
-export default ({ edit }) => (
+export default ({ edit, remove }) => (
   <Actions>
     <Button className='edit' onClick={() => edit(true)}>
       Edit Profile
     </Button>
-    <Button className='delete'>Delete Profile</Button>
+    <Button className='delete' onClick={remove}>
+      Delete Profile
+    </Button>
   </Actions>
 )
