@@ -7,7 +7,7 @@ import { UserProfile, EditForm, Actions } from '../components/users'
 import { Title } from '../components/styled'
 
 const Profile = () => {
-  const { isAuthenticated, editMode, setEditMode } = useContext(UserContext)
+  const { isAuthenticated, editMode, setEditMode, submitDelete } = useContext(UserContext)
 
   useEffect(
     () => {
@@ -25,7 +25,7 @@ const Profile = () => {
         ) : (
           <>
             <UserProfile />
-            <Actions edit={setEditMode} />
+            <Actions edit={setEditMode} remove={submitDelete} />
           </>
         )}
       </Page>
