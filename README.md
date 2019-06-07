@@ -19,7 +19,7 @@ Built with React using React Hooks and React Context, styled with Styled Compone
 | Logout user                             | Done   | <ul><li> - [x] </li></ul> |
 | Show the logged in user profile         | Done   | <ul><li> - [x] </li></ul> |
 | Edit the current logged in user profile | Done   | <ul><li> - [x] </li></ul> |
-| Delete the current logged in user       | To do  | <ul><li> - [ ] </li></ul> |
+| Delete the current logged in user       | Done   | <ul><li> - [x] </li></ul> |
 
 # Api endpoints
 
